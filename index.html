@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>College Event Registration</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: black;
+      color: #00ff66;
+      font-family: "Courier New", monospace;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    /* Dropdown Menu */
+    .menu {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      z-index: 5;
+    }
+    .menu button {
+      background: black;
+      color: #00ff66;
+      border: 2px solid #00ff66;
+      padding: 8px 12px;
+      font-family: "Courier New", monospace;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .menu button:hover {
+      background: #00ff66;
+      color: black;
+      box-shadow: 0 0 10px #00ff66;
+    }
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background: black;
+      border: 1px solid #00ff66;
+      min-width: 160px;
+      z-index: 1;
+    }
+    .dropdown-content a {
+      color: #00ff66;
+      padding: 10px;
+      text-decoration: none;
+      display: block;
+      transition: 0.3s;
+    }
+    .dropdown-content a:hover {
+      background: #00ff66;
+      color: black;
+    }
+    .menu:hover .dropdown-content {
+      display: block;
+    }
+
+    .terminal {
+      width: 90%;
+      max-width: 600px;
+      padding: 20px;
+      border: 2px solid #00ff66;
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.9);
+      box-shadow: 0 0 20px #00ff66;
+      animation: flicker 2s infinite alternate;
+      z-index: 2;
+    }
+
+    @keyframes flicker {
+      from { box-shadow: 0 0 20px #00ff66; }
+      to   { box-shadow: 0 0 40px #00ff66; }
+    }
+
+    h1 {
+      font-size: 24px;
+      text-align: center;
+      margin-bottom: 20px;
+      text-shadow: 0 0 5px #00ff66, 0 0 10px #00ff66;
+      animation: typing 3s steps(30) 1;
+      overflow: hidden;
+      white-space: nowrap;
+      border-right: 2px solid #00ff66;
+    }
+
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    label {
+      display: block;
+      margin: 15px 0 5px;
+      font-size: 14px;
+      letter-spacing: 1px;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      outline: none;
+      background: black;
+      color: #00ff66;
+      font-family: "Courier New", monospace;
+      font-size: 14px;
+      border-bottom: 2px solid #00ff66;
+      transition: 0.3s;
+    }
+
+    input:focus, select:focus {
+      border-bottom: 2px solid #00ffaa;
+      box-shadow: 0 0 10px #00ffaa;
+    }
+
+    button {
+      margin-top: 20px;
+      border: 2px solid #00ff66;
+      cursor: pointer;
+      background: transparent;
+      text-transform: uppercase;
+      font-weight: bold;
+      letter-spacing: 2px;
+    }
+
+    button:hover {
+      background: #00ff66;
+      color: black;
+      box-shadow: 0 0 15px #00ff66, 0 0 30px #00ff66;
+    }
+
+    .footer {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 12px;
+      opacity: 0.8;
+    }
+
+    .watermark {
+      position: fixed;
+      bottom: 10px;
+      left: 15px;
+      font-size: 14px;
+      color: #00ff66;
+      text-shadow: 0 0 5px #00ff66, 0 0 15px #00ff66;
+      font-weight: bold;
+      opacity: 0.9;
+    }
+
+    /* Matrix background effect */
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+  </style>
+</head>
+<body>
+  <!-- Dropdown menu -->
+  <div class="menu">
+    <button>> MENU</button>
+    <div class="dropdown-content">
+      <a href="#">🏠 Home</a>
+      <a href="#">📝 Register</a>
+      <a href="#">📡 About</a>
+      <a href="#">📂 Downloads</a>
+      <a href="#">⚡ Contact</a>
+    </div>
+  </div>
+
+  <canvas id="matrix"></canvas>
+  <div class="terminal">
+    <h1>College Event Registration</h1>
+    <form id="registrationForm">
+      <label for="name">> Name:</label>
+      <input type="text" id="name" required>
+      
+      <label for="email">> Email:</label>
+      <input type="email" id="email" required>
+      
+      <label for="event">> Select Event:</label>
+      <select id="event" required>
+        <option value="">-- Choose an event --</option>
+        <option value="hackathon">Hackathon</option>
+        <option value="robotics">Robotics</option>
+        <option value="ai">AI Workshop</option>
+      </select>
+      
+      <button type="submit">Submit</button>
+    </form>
+    <div class="footer">[ Made by Aman ]</div>
+  </div>
+
+  <div class="watermark">@aman</div>
+
+  <script>
+    // Space-style sounds
+    const typeSound = new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_2f0a20e6ce.mp3?filename=sci-fi-computer-typing-2-110397.mp3");
+    const beepSound = new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_22064d05d3.mp3?filename=sci-fi-confirmation-beep-109479.mp3");
+
+    document.querySelectorAll("input, select").forEach(el => {
+      el.addEventListener("keydown", () => {
+        typeSound.currentTime = 0;
+        typeSound.play();
+      });
+    });
+
+    document.getElementById("registrationForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const event = document.getElementById("event").value;
+      
+      if (!name || !email || !event) {
+        beepSound.play();
+        alert("Error: All fields are required!");
+        return;
+      }
+      if (!/^[^ ]+@[^ ]+\.[a-z]{2,3}$/.test(email)) {
+        beepSound.play();
+        alert("Error: Invalid email format!");
+        return;
+      }
+
+      beepSound.play();
+      alert("Registration successful! Welcome, " + name + " 🚀");
+    });
+
+    // Matrix effect
+    const canvas = document.getElementById("matrix");
+    const ctx = canvas.getContext("2d");
+
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
+
+    const letters = "01";
+    const fontSize = 14;
+    const columns = canvas.width / fontSize;
+
+    const drops = Array.from({length: columns}).fill(1);
+
+    function draw() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = "#00ff66";
+      ctx.font = fontSize + "px Courier";
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = letters[Math.floor(Math.random() * letters.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        drops[i]++;
+      }
+    }
+
+    setInterval(draw, 33);
+  </script>
+</body>
+</html>
